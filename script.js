@@ -1,19 +1,29 @@
 const board = document.querySelector(".board")
+const modal = document.querySelector(".modal")
+const startGameModal = document.querySelector(".start-game")
+const gameOverModal = document.querySelector(".game-over")
+const startButton = document.querySelector(".btn-start")
+const restartButton = document.querySelector(".btn-restart")
+
+const highScoreElement = document.querySelector("#high-score")
+const scoreElement = document.querySelector("#score")
+const timeElement = document.querySelector("#time")
 
 let blockWidth = 50;
 let blockHeight = 50;
+
+let score = 0;
+let highScore = 0;
+let time = `00-00`
 
 let blocks = [];
 
 let snake = [{
     x: 1, y: 3
-}, {
-    x: 1, y: 4
-}, {
-    x: 1, y: 5
-}
+}, 
 ]
 
+let intervalId = null
 let direction = "right"
 
 let cols = Math.floor(board.clientWidth / blockWidth);
@@ -53,14 +63,30 @@ function renderSnake() {
     }
 
     if (snakeHead.x < 0 || snakeHead.x >= rows || snakeHead.y < 0 || snakeHead.y >= cols) {
-        alert("Game Over..!")
         clearInterval(intervalId)
+
+        modal.style.display = "flex"
+        startGameModal.style.display = "none"
+        gameOverModal.style.display = "flex"
+
+        return;
+
     }
 
+    // Food Consume logic
     if(food.x == snakeHead.x && food.y == snakeHead.y){
         blocks[`${food.x}-${food.y}`].classList.remove("food")
         food = {x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * cols)}
         blocks[`${food.x}-${food.y}`].classList.add("food")
+
+        score += 10
+        scoreElement.textContent = score;
+
+        if(score > highScore){
+            highScore = score;
+            localStorage.setItem("highscore", highScore)
+            highScoreElement.textContent = highScore;
+        }
 
         snake.unshift(snakeHead)
     }
@@ -87,10 +113,40 @@ function renderSnake() {
 
 }
 
-let intervalId = setInterval(() => {
-    renderSnake()
 
-}, 500)
+startButton.addEventListener("click", () => {
+    modal.style.display = "none"
+    intervalId = setInterval( () => {
+        renderSnake()
+    },300)
+})
+
+restartButton.addEventListener("click", restartGame)
+
+function restartGame(){
+
+    blocks[`${food.x}-${food.y}`].classList.remove("food")
+
+    snake.forEach(segment => {
+        blocks[`${segment.x}-${segment.y}`].classList.remove("fill")
+    })
+
+    modal.style.display = "none"
+    snake = [{
+        x: 1, y: 3
+    }]
+
+    food = {x:Math.floor(Math.random() * rows), y:Math.floor(Math.random() * cols)}
+    
+    direction = "right";
+    score = 0;
+
+    intervalId = setInterval(() => {
+        renderSnake()
+    }, 300);
+
+}
+
 
 
 addEventListener("keydown", (event) => {
