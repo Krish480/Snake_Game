@@ -1,8 +1,8 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: gilroy;
+    font-family:Arial, Helvetica, sans-serif
 }
 
 html,
@@ -14,7 +14,7 @@ body {
 }
 
 
-:root{
+:root {
     /* Background Colors */
     --bg-primart-color: #0c0c0c;
     --bg-fill-color: rgb(238, 158, 158);
@@ -44,10 +44,11 @@ body {
     --border-radius-xl: 32px;
     --border-radius-2xl: 40px;
     --border-radius-3xl: 48px;
-    
+
 }
 
-main,section{
+main,
+section {
     height: 100%;
     width: 100%;
 }
@@ -55,41 +56,83 @@ main,section{
 section {
     padding: var(--space-2xl);
     display: flex;
-    flex-direction: column;  
+    flex-direction: column;
     gap: var(--space-lg)
 }
 
-section .infos{
+.btn {
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: var(--border-radius-sm);
+}
+
+.btn:hover{
+    background-color:var(--bg-primart-color);
+    color: var(--text-primary-color);
+    border: 1px solid var(--text-primary-color)
+}
+
+.btn:active{
+    scale: 0.98;
+}
+
+section .infos {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
-.info{
+.info {
     border: 1px solid var(--border-primary-color);
     border-radius: var(--border-radius-sm);
     padding: var(--space-sm) var(--space-md);
 
 }
 
-.board{
+.board {
     flex-grow: 1;
     border: 1px solid var(--border-primary-color);
     display: grid;
-    grid-template-columns:repeat(auto-fill, minmax(50px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
 }
 
-.block{
+.block {
     height: 50px;
     width: 50px;
     border: 1px solid var(--border-primary-color);
 }
 
-.fill{
+.fill {
     background-color: var(--bg-fill-color);
 }
 
-.food{
+.food {
     background-color: var(--bg-food-color);
+}
+
+.modal {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal .start-game, .game-over {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg)
+}
+
+.game-over{
+    display: none;
 }
