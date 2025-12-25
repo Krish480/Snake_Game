@@ -13,8 +13,10 @@ let blockWidth = 50;
 let blockHeight = 50;
 
 let score = 0;
-let highScore = 0;
+let highScore = localStorage.getItem("highscore") || 0
 let time = `00-00`
+
+highScoreElement.textContent = highScore;
 
 let blocks = [];
 
@@ -24,6 +26,7 @@ let snake = [{
 ]
 
 let intervalId = null
+let timeIntervalId = null
 let direction = "right"
 
 let cols = Math.floor(board.clientWidth / blockWidth);
@@ -31,16 +34,20 @@ let rows = Math.floor(board.clientHeight / blockHeight);
 
 let food = { x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * cols) }
 
+
+// /Creating Blocks Logic
 for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
         let block = document.createElement('div')
         block.classList.add("block")
         board.append(block)
-        block.innerText = `${row}-${col}`
+        // block.innerText = `${row}-${col}`
         blocks[`${row}-${col}`] = block;
     }
 }
 
+
+// Render Snake Logic
 function renderSnake() {
     let snakeHead = null;
 
@@ -62,6 +69,7 @@ function renderSnake() {
         snakeHead = { x: snake[0].x + 1, y: snake[0].y }
     }
 
+    // Collision logic
     if (snakeHead.x < 0 || snakeHead.x >= rows || snakeHead.y < 0 || snakeHead.y >= cols) {
         clearInterval(intervalId)
 
@@ -84,12 +92,12 @@ function renderSnake() {
 
         if(score > highScore){
             highScore = score;
-            localStorage.setItem("highscore", highScore)
-            highScoreElement.textContent = highScore;
+            localStorage.setItem("highscore", highScore.toString())
         }
 
         snake.unshift(snakeHead)
     }
+
 
     snake.forEach(segment => {
         blocks[`${segment.x}-${segment.y}`].classList.remove("fill")
@@ -119,10 +127,26 @@ startButton.addEventListener("click", () => {
     intervalId = setInterval( () => {
         renderSnake()
     },300)
+
+    timeIntervalId = setInterval(() => {
+        let [min, sec] = time.split("-").map(Number)
+
+        if(sec == 59){
+            min +=1;
+            sec = 0;
+        }else{
+            sec += 1;
+        }
+
+        time = `${min}-${sec}`
+        timeElement.textContent = time;
+    },1000)
 })
 
 restartButton.addEventListener("click", restartGame)
 
+
+// ======= Restar Game ========= 
 function restartGame(){
 
     blocks[`${food.x}-${food.y}`].classList.remove("food")
@@ -140,6 +164,11 @@ function restartGame(){
     
     direction = "right";
     score = 0;
+    time = `00-00`
+
+    scoreElement.textContent = score;
+    highScoreElement.textContent = highScore
+    timeElement.textContent = time;
 
     intervalId = setInterval(() => {
         renderSnake()
@@ -169,3 +198,4 @@ addEventListener("keydown", (event) => {
     }
 })
 
+// localStorage.clear()
